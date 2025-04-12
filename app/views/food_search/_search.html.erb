@@ -1,0 +1,25 @@
+<turbo-frame id="food_search">
+<div class ="space-y-12">
+  <h1 class = "text=2xl font-bold">Seach for Food:</h1>
+    <%= form_with url: food_search_path, method: :get, local: true do |form| %>
+      <div class="flex items-center space-x-4">
+        <%= form.text_field :query, placeholder: "Enter food name", class: "border border-gray-300 rounded p-2" %>
+        <%= form.submit "Search", class: "bg-blue-500 text-white rounded p-2" %>
+      </div>
+    <% end %>
+
+  <% if @foods.any? %>
+    <ul>
+      <% @foods.each do |food| %>
+        <li><%= food.name %></li>
+<%
+=begin%>
+  TODO: IF PRESENT, ADD BUTTON TO ADD FOOD TO FOOD ENTRY (ADD FOOD ENTRY TO DAILY LOG AFTER PERFORMING CALCULATIONS)
+<%
+=end%>
+      <% end %>
+    </ul>
+    <% elsif params[:query].present? %>
+      <p class="text-red-500">No results found for "<%= params[:query] %>"</p>
+    <% end %>
+</div>

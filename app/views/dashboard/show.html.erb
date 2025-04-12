@@ -1,5 +1,5 @@
 <% content_for(:title) { "Home | Nutrition Tracker" } %>
 <div class ="space-y-12">
   <h2 class = "text-xl font-bold">Calories for <%= Date.today.strftime("%B %d, %Y") %>:</h2>
-  <%= link_to "Search", root_path, class: "text-gray-700 underline hover:no-underline" %>
+  <%= render partial: "food_search/search", locals: { foods: [] } %>
 </div>
