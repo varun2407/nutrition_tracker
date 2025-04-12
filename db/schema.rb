@@ -10,7 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_12_182328) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_12_204307) do
+  create_table "daily_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "profile_id", null: false
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_daily_logs_on_profile_id"
+  end
+
+  create_table "food_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "daily_logs_id", null: false
+    t.integer "quantity", null: false
+    t.integer "meal_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["daily_logs_id"], name: "index_food_entries_on_daily_logs_id"
+  end
+
+  create_table "foods", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "calories", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "goals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "calories", default: 0, null: false
     t.integer "carbs", default: 0, null: false
@@ -52,6 +76,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_12_182328) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "daily_logs", "profiles"
+  add_foreign_key "food_entries", "daily_logs", column: "daily_logs_id"
   add_foreign_key "profiles", "users"
   add_foreign_key "sessions", "users"
 end

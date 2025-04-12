@@ -6,4 +6,11 @@ class User < ApplicationRecord
   after_create_commit :create_profile
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
+
+  private
+    def create_profile
+      build_profile.save
+      #  self.profile = Profile.new(user: self)
+      #  profile.save
+    end
 end
