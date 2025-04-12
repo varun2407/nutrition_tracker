@@ -10,7 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_11_190308) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_12_182328) do
+  create_table "goals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "calories", default: 0, null: false
+    t.integer "carbs", default: 0, null: false
+    t.integer "protein", default: 0, null: false
+    t.integer "fat", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "profiles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
   create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "ip_address"
@@ -21,6 +37,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_11_190308) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
     t.string "email_address", null: false
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
@@ -28,5 +45,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_11_190308) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  create_table "weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.decimal "weight", precision: 5, scale: 2, null: false
+    t.date "measured_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "profiles", "users"
   add_foreign_key "sessions", "users"
 end
