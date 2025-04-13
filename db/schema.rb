@@ -31,6 +31,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_12_204307) do
   create_table "foods", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.integer "calories", null: false
+    t.integer "carbs", null: false
+    t.integer "protein", null: false
+    t.integer "fat", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

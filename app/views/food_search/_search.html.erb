@@ -12,11 +12,13 @@
     <ul>
       <% @foods.each do |food| %>
         <li><%= food.name %></li>
+        <li><%= food.calories %> calories</li>
 <%
 =begin%>
   TODO: IF PRESENT, ADD BUTTON TO ADD FOOD TO FOOD ENTRY (ADD FOOD ENTRY TO DAILY LOG AFTER PERFORMING CALCULATIONS)
 <%
 =end%>
+
       <% end %>
     </ul>
     <% elsif params[:query].present? %>

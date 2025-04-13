@@ -1,0 +1,3 @@
+class CalorieCalculator
+
+end
