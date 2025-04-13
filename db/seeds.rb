@@ -9,6 +9,7 @@
 #   end
 
 require "json"
+Food.destroy_all
 
 foods_data = JSON.parse(File.read(Rails.root.join('db/foods.json')), symbolize_names: true)
 
