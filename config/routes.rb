@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   resource :session
   resource :registration, only: %i[ new create]
   resources :passwords, param: :token
-  resources :profiles, only: %i[ show edit update ]
+  resources :profiles, only: %i[ show edit update ] do
+    resources :daily_logs do
+      resources :food_entries
+    end
+  end
 
   get "food_search", to: "food_search#index", as: :food_search
 

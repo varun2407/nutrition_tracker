@@ -1,5 +1,27 @@
 <% content_for(:title) { "Edit Profile | Nutrition Tracker" } %>
-<h1 class="text-2xl font-bold content-center"> Edit Profile </h1>
-<%= form_with model: @profile, url: edit_profile_url, class: "content" do |form| %>
+<div class="flex justify-center">
+  <div class="w-full max-w-md">
+    <h1 class="text-2xl font-bold content-center"> Edit Profile </h1>
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div class="mb-4">
+        <%= form_with model: @profile, url: profile_path(@profile), local: true do |form| %>
+          <% if @profile.errors.any? %>
+            <div class="mb-4">
+              <ul class="text-red-500">
+                <% @profile.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+         <%= form.label :birth_date, "Date of Birth", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.date_field :birth_date, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+         <%= form.label :height, "Height", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :height, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
 
-<% end %>
+          <%= button_tag "Save", type: :submit, class: "mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
