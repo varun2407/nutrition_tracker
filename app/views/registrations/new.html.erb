@@ -1,3 +1,4 @@
+<% content_for(:title) { "Register | Nutrition Tracker" } %>
 <div class="mx-auto md:w-2/3 w-full">
   <% if alert = flash[:alert] %>
     <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
@@ -10,6 +11,9 @@
   <h1 class="font-bold text-4xl">Sign Up</h1>
 
   <%= form_with model: @user, url: registration_url, class: "contents" do |form| %>
+    <div class="my-5">
+      <%= form.text_field :name, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your name", value: params[:email_address], class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+    </div>
     <div class="my-5">
       <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
     </div>
