@@ -3,7 +3,7 @@ class FoodEntriesController < ApplicationController
     # Get profile and daily_log from route
     profile = Profile.find(params[:profile_id])
     @daily_log = profile.daily_logs.find(params[:daily_log_id])
-    @food = Food.find_or_create_by(params[:food_id])
+    @food = Food.find(params[:food_id])
 
     @food_entry = @daily_log.food_entries.create(
       food: @food,
