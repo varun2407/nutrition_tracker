@@ -23,8 +23,8 @@ class FoodSearchController < ApplicationController
     end
 
     respond_to do |format|
-      format.turbo_stream { render partial: "food_search/search", locals: { foods: @foods, daily_log_id: params[:daily_log_id], profile_id: params[:profile_id] } }
-      format.html { render partial: "food_search/search", locals: { foods: @foods, daily_log_id: params[:daily_log_id], profile_id: params[:profile_id] } }
+      format.turbo_stream { render partial: "food_search/search", locals: { foods: @foods, daily_log_id: params[:daily_log_id], user_id: current_user.id } }
+      format.html { render partial: "food_search/search", locals: { foods: @foods, daily_log_id: params[:daily_log_id], user_id: current_user.id } }
     end
   end
 end
