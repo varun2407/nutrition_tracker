@@ -2,6 +2,8 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_one :profile, dependent: :destroy
+  has_one :goal, dependent: :destroy
+  has_many :daily_logs, dependent: :destroy
 
   after_create_commit :create_profile
 

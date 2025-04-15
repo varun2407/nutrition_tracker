@@ -1,23 +1,53 @@
 <% content_for(:title) { "Home | Nutrition Tracker" } %>
-<div class ="space-y-6">
-  <h2 class = "text-xl font-bold">Calories for <%= Date.today.strftime("%B %d, %Y") %>:</h2>
-    <p class="text-lg font-medium">Total Calories: <%= @total_calories %> kcal</p>
-    <p class="text-lg font-medium">Remaining Calories: <%= @remaining_calories %> kcal</p>
 
-     <% if @daily_log.food_entries.any? %>
-    <h3 class="text-lg font-bold">Your Logged Items:</h3>
-    <ul>
-      <% @daily_log.food_entries.each do |entry| %>
-        <li>
-          <p class="font-bold"><%= entry.food.name %></p>
-          <%= entry.quantity %> serving(s),
-          <%= entry.meal_type.capitalize %>
-        </li>
-      <% end %>
-    </ul>
-  <% else %>
-    <p class="text-gray-500">No food items logged yet for today.</p>
-  <% end %>
+<div class="w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="lg:col-span-4 xl:col-span-3">
+      <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, user_id: current_user.id} %>
+    </div>
 
-  <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, profile_id: @profile.id } %>
+    <div class="lg:col-span-8 xl:col-span-9">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-3 mb-4">
+            Calories for <%= Date.today.strftime("%B %d, %Y") %>:
+          </h2>
+
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-700">Total Calories:</span>
+              <span class="font-medium text-lg"><%= @total_calories %> kcal</span>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-gray-700">Remaining:</span>
+              <span class="font-medium text-lg <%= @remaining_calories > 0 ? 'text-green-600' : 'text-red-600' %>">
+                <%= @remaining_calories %> kcal
+              </span>
+            </div>
+
+            <div class="mt-4">
+              <% percent_consumed = @total_calories > 0 ? (@total_calories.to_f / (@total_calories + @remaining_calories) * 100).round : 0 %>
+              <div class="w-full bg-gray-200 rounded-full h-3">
+                <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: <%= percent_consumed %>%"></div>
+              </div>
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>0%</span>
+                <span>50%</span>
+                <span>100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+          <div class="flex justify-between items-center mb-5">
+            <div id="dashboard_food_log">
+             <%= render partial: "food_log", locals: { daily_log: @daily_log } %>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

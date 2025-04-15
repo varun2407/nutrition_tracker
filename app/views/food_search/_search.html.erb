@@ -3,7 +3,6 @@
   <h1 class = "text=2xl font-bold">Search for Food:</h1>
     <%= form_with url: food_search_path, method: :get, local: true do |form| %>
       <%= form.hidden_field :daily_log_id, value: daily_log_id %>
-      <%= form.hidden_field :profile_id, value: profile_id %>
       <div class="flex items-center space-x-4">
         <%= form.text_field :query, placeholder: "Enter food name", class: "border border-gray-300 rounded p-2" %>
         <%= form.submit "Search", class: "bg-blue-500 text-white rounded p-2" %>
@@ -19,7 +18,8 @@
          <li>Protein: <%= food.protein %> gms</li>
          <li>Fats: <%= food.fat %> gms</li>
          <li>
-          <%= form_with url: profile_daily_log_food_entries_path(profile_id: profile_id, daily_log_id: daily_log_id), method: :post, local: true do |form| %>
+          <%= form_with url: daily_log_food_entries_path(daily_log_id: daily_log_id), method: :post, local: false do |form| %>
+            <%= form.hidden_field :daily_log_id, value: daily_log_id %>
             <%= form.hidden_field :food_id, value: food.id %>
             <%= form.number_field :quantity, value: 1, min: 1, class: "border border-gray-300 rounded p-1 w-16", placeholder: "Qty" %>
             <%= form.select :meal_type, options_for_select([["Breakfast", :breakfast], ["Lunch", :lunch], ["Dinner", :dinner], ["Snacks", :snacks]]), class: "border border-gray-300 rounded p-1" %>
