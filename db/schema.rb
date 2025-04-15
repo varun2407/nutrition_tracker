@@ -38,6 +38,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_12_203211) do
     t.integer "fat", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_foods_on_name", unique: true
   end
 
   create_table "goals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

@@ -108,6 +108,24 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    ethon (0.16.0)
+      ffi (>= 1.15.0)
+    faraday (2.13.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
+    faraday-typhoeus (1.1.0)
+      faraday (~> 2.0)
+      typhoeus (~> 1.4)
+    ffi (1.17.1-aarch64-linux-gnu)
+    ffi (1.17.1-aarch64-linux-musl)
+    ffi (1.17.1-arm-linux-gnu)
+    ffi (1.17.1-arm-linux-musl)
+    ffi (1.17.1-arm64-darwin)
+    ffi (1.17.1-x86_64-linux-gnu)
+    ffi (1.17.1-x86_64-linux-musl)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -156,6 +174,8 @@ GEM
     minitest (5.25.5)
     msgpack (1.8.0)
     mysql2 (0.5.6)
+    net-http (0.6.0)
+      uri
     net-imap (0.5.6)
       date
       net-protocol
@@ -185,6 +205,10 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.7-x86_64-linux-musl)
       racc (~> 1.4)
+    ollama-ai (1.3.0)
+      faraday (~> 2.10)
+      faraday-typhoeus (~> 1.1)
+      typhoeus (~> 1.4, >= 1.4.1)
     ostruct (0.6.1)
     parallel (1.26.3)
     parser (3.3.7.4)
@@ -333,6 +357,8 @@ GEM
     turbo-rails (2.0.13)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
+    typhoeus (1.4.1)
+      ethon (>= 0.9.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.1.4)
@@ -375,6 +401,7 @@ DEPENDENCIES
   jbuilder
   kamal
   mysql2 (~> 0.5)
+  ollama-ai (~> 1.3.0)
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.2)

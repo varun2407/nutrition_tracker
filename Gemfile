@@ -22,6 +22,8 @@ gem "bcrypt", "~> 3.1.7"
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
+# OLLAMA
+gem 'ollama-ai', '~> 1.3.0'
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
