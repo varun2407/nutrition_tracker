@@ -1,23 +1,42 @@
 <% content_for(:title) { "Home | Nutrition Tracker" } %>
-<div class ="space-y-6">
-  <h2 class = "text-xl font-bold">Calories for <%= Date.today.strftime("%B %d, %Y") %>:</h2>
-    <p class="text-lg font-medium">Total Calories: <%= @total_calories %> kcal</p>
-    <p class="text-lg font-medium">Remaining Calories: <%= @remaining_calories %> kcal</p>
 
-     <% if @daily_log.food_entries.any? %>
-    <h3 class="text-lg font-bold">Your Logged Items:</h3>
-    <ul>
-      <% @daily_log.food_entries.each do |entry| %>
-        <li>
-          <p class="font-bold"><%= entry.food.name %></p>
-          <%= entry.quantity %> serving(s),
-          <%= entry.meal_type.capitalize %>
-        </li>
-      <% end %>
-    </ul>
+<div class="max-w-3xl mx-auto px-4 py-8 space-y-8">
+  <div class="space-y-2">
+    <h2 class="text-2xl font-semibold text-gray-800">
+      Calories for <%= Date.today.strftime("%B %d, %Y") %>:
+    </h2>
+    <p class="text-lg text-gray-700 font-medium">
+      Total Calories: <%= @total_calories %> kcal
+    </p>
+    <p class="text-lg text-gray-700 font-medium">
+      Remaining Calories: <%= @remaining_calories %> kcal
+    </p>
+  </div>
+
+  <% if @daily_log.food_entries.any? %>
+    <div class="space-y-4">
+      <h3 class="text-xl font-semibold text-gray-800">Your Logged Items:</h3>
+      <ul class="space-y-4 flex flex-col-reverse">
+        <% @daily_log.food_entries.each do |entry| %>
+          <li class="bg-white p-4 rounded-xl shadow-md border">
+            <p class="text-lg font-semibold text-gray-900"><%= entry.food.name %></p>
+            <p class="text-sm text-gray-600">
+              <%= entry.quantity %> serving(s), <%= entry.meal_type.capitalize %>
+            </p>
+            <%= button_to 'Delete',
+                  profile_daily_log_food_entry_path(@profile.id, @daily_log.id, entry.id),
+                  method: :delete,
+                  data: { confirm: 'Are you sure?' },
+                  class: "mt-2 text-sm text-red-600 hover:underline" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   <% else %>
-    <p class="text-gray-500">No food items logged yet for today.</p>
+    <p class="text-gray-500 italic">No food items logged yet for today.</p>
   <% end %>
 
-  <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, profile_id: @profile.id } %>
+  <div class="mt-6">
+    <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, profile_id: @profile.id } %>
+  </div>
 </div>

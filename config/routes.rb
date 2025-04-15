@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :profiles, only: %i[ show edit update ] do
     resources :daily_logs do
-      resources :food_entries
+      resources :food_entries, only: %i[ create destroy ]
     end
   end
 

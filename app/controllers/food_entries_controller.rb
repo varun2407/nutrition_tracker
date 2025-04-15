@@ -19,4 +19,11 @@ class FoodEntriesController < ApplicationController
       render :new
     end
   end
+
+  def destroy
+    food_entry = FoodEntry.find(params[:id])
+    food_entry.destroy
+
+    redirect_to profile_daily_log_path(food_entry.daily_log.profile, food_entry.daily_log), notice: "Food entry deleted successfully."
+  end
 end
