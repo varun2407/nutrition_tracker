@@ -22,15 +22,12 @@ gem "bcrypt", "~> 3.1.7"
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
+
 # OLLAMA
 gem 'ollama-ai', '~> 1.3.0'
-# Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
-# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
-gem "kamal", require: false
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "bootsnap", require: false
+gem "kamal", require: false
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

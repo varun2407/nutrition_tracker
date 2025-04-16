@@ -12,7 +12,6 @@ class FoodEntriesController < ApplicationController
     if @food_entry.persisted?
       respond_to do |format|
         format.turbo_stream do
-          @daily_log.reload
           render turbo_stream: turbo_stream.update(
             "dashboard_food_log",
             html: render_to_string(
@@ -23,7 +22,7 @@ class FoodEntriesController < ApplicationController
         end
         format.html do
           flash[:success] = "Food entry created successfully."
-          redirect_to daily_log_path(@daily_log)
+          @daily_log.reload
         end
       end
     else

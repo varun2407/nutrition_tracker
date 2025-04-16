@@ -9,8 +9,15 @@
 #   end
 
 require "json"
+
+# Clear out data with proper order to maintain referential integrity
+puts "Clearing existing food entries..."
+FoodEntry.destroy_all
+
+puts "Clearing existing foods..."
 Food.destroy_all
 
+puts "Loading food data from JSON file..."
 foods_data = JSON.parse(File.read(Rails.root.join('db/foods.json')), symbolize_names: true)
 
 foods_data.each do |food_data|
@@ -23,4 +30,5 @@ foods_data.each do |food_data|
   )
 end
 
-puts "Created #{Food.count} food items"
+puts "Successfully created #{Food.count} food items"
+puts "Seed completed successfully!"
