@@ -10,15 +10,15 @@ class FoodSearchController < ApplicationController
     if @foods.empty? && params[:query].present?
       search = SearchResults.new
       ai_result = search.display_calorie_information(params[:query])
-      @foods = [ai_result] if ai_result
+      @foods = [ ai_result ] if ai_result
 
         if ai_result
-          @foods = [Food.find_or_create_by(name: ai_result[:name]) do |food|
+          @foods = [ Food.find_or_create_by(name: ai_result[:name]) do |food|
             food.calories = ai_result[:calories]
             food.carbs = ai_result[:carbs]
             food.protein = ai_result[:protein]
             food.fat = ai_result[:fat]
-          end]
+          end ]
         end
     end
 
