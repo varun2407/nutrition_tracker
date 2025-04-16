@@ -1,10 +1,10 @@
 class SearchResults
-  require 'ollama-ai'
+  require "ollama-ai"
 
   def display_calorie_information(food_name)
     Rails.logger.debug("In display_calorie_information with food_name: #{food_name}")
     client = Ollama.new(
-      credentials: { address: 'http://localhost:11434' },
+      credentials: { address: "http://localhost:11434" },
       options: { server_sent_events: true }
     )
 
@@ -31,12 +31,12 @@ class SearchResults
     PROMPT
 
     result = client.generate(
-        {model: 'llama2',
-        prompt: prompt,
+        { model: "llama2",
+        prompt: prompt
       }
     )
 
-    response_text = result.map { |r| r['response'] }.join('')
+    response_text = result.map { |r| r["response"] }.join("")
     Rails.logger.debug("Response from Ollama: #{response_text}")
 
     begin
@@ -48,7 +48,7 @@ class SearchResults
         protein: food_data[:protein],
         fat: food_data[:fat]
       )
-      rescue JSON::ParserError => e
+    rescue JSON::ParserError => e
       Rails.logger.error("Failed to parse JSON response: #{e.message}")
       Rails.logger.error("Response was: #{response_text}")
       nil

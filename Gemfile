@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "~> 8.0.2"
 
-#DRIVERS
+# DRIVERS
 gem "mysql2", "~> 0.5"
 
 # DEPLOYMENT
@@ -24,7 +24,7 @@ gem "solid_queue"
 gem "solid_cable"
 
 # OLLAMA
-gem 'ollama-ai', '~> 1.3.0'
+gem "ollama-ai", "~> 1.3.0"
 
 gem "bootsnap", require: false
 gem "kamal", require: false
