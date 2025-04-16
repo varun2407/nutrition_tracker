@@ -1,14 +1,13 @@
 <% content_for(:title) { "Home | Nutrition Tracker" } %>
 
-<div class="w-full">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<div class="w-full px-6">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
     <div class="lg:col-span-4 xl:col-span-3">
-      <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, user_id: current_user.id} %>
+      <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, user_id: current_user.id } %>
     </div>
 
     <div class="lg:col-span-8 xl:col-span-9">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-3 mb-4">
             Calories for <%= Date.today.strftime("%B %d, %Y") %>:
@@ -42,10 +41,9 @@
         </div>
 
         <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-          <div class="flex justify-between items-center mb-5">
-            <div id="dashboard_food_log">
-             <%= render partial: "food_log", locals: { daily_log: @daily_log } %>
-        </div>
+          <div id="dashboard_food_log">
+            <%= render partial: "food_log", locals: { daily_log: @daily_log } %>
+          </div>
         </div>
       </div>
     </div>

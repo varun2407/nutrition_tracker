@@ -1,48 +1,51 @@
-<h3 class="text-xl font-semibold text-gray-800">Today's Food Log</h3>
-          <% if @daily_log.food_entries.any? %>
-            <div class="space-y-6">
-              <% @daily_log.food_entries.group_by(&:meal_type).each do |meal_type, entries| %>
-                <div>
-                  <h4 class="text-md font-medium text-gray-700 bg-gray-50 p-3 rounded-md flex justify-between items-center">
-                    <span class="capitalize"><%= meal_type %></span>
-                    <span class="text-sm font-semibold px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                      <%= entries.sum { |e| e.food.calories * e.quantity } %> kcal
-                    </span>
-                  </h4>
+<h3 class="text-xl font-semibold text-gray-800 mb-4">Today's Food Log</h3>
 
-                  <div class="mt-3 divide-y divide-gray-100">
-                    <% entries.each do |entry| %>
-                      <div class="py-3 flex justify-between items-center hover:bg-gray-50 px-3 rounded-md transition-colors">
-                        <div>
-                          <p class="font-medium text-gray-800"><%= entry.food.name %></p>
-                          <div class="flex items-center text-xs text-gray-500 mt-1 space-x-2">
-                            <span><%= entry.quantity %> serving(s)</span>
-                            <span>•</span>
-                            <span><%= entry.food.carbs %>g Carbs</span>
-                            <span>•</span>
-                            <span><%= entry.food.protein %>g Protein</span>
-                            <span>•</span>
-                            <span><%= entry.food.fat %>g Fat</span>
-                          </div>
-                        </div>
+<% if @daily_log.food_entries.any? %>
+  <div class="space-y-6">
+    <% @daily_log.food_entries.group_by(&:meal_type).each do |meal_type, entries| %>
+      <div class="bg-white shadow-sm border border-gray-100 rounded-lg">
+        <h4 class="text-md font-medium text-gray-700 bg-gray-100 px-4 py-3 rounded-t-lg flex justify-between items-center">
+          <span class="capitalize"><%= meal_type %></span>
+          <span class="text-sm font-semibold px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+            <%= entries.sum { |e| e.food.calories * e.quantity } %> kcal
+          </span>
+        </h4>
 
-                        <div class="flex items-center space-x-4">
-                          <span class="font-medium"><%= entry.food.calories * entry.quantity %> kcal</span>
-                          <%= button_to 'x',
-                                daily_log_food_entry_path(@daily_log.id, entry.id),
-                              method: :delete,
-                              data: { confirm: 'Are you sure?' },
-                              class: "text-red-500 hover:text-white hover:bg-red-500 rounded-full h-7 w-7 flex items-center justify-center transition-colors" %>
-                        </div>
-                      </div>
-                    <% end %>
-                  </div>
+        <div class="divide-y divide-gray-100">
+          <% entries.each do |entry| %>
+            <div class="px-4 py-3 flex justify-between items-center hover:bg-gray-50 transition-colors">
+              <div>
+                <p class="font-medium text-gray-900"><%= entry.food.name %></p>
+                <div class="flex items-center text-xs text-gray-500 mt-1 space-x-2">
+                  <span><%= entry.quantity %> serving(s)</span>
+                  <span>•</span>
+                  <span><%= entry.food.carbs %>g Carbs</span>
+                  <span>•</span>
+                  <span><%= entry.food.protein %>g Protein</span>
+                  <span>•</span>
+                  <span><%= entry.food.fat %>g Fat</span>
                 </div>
-              <% end %>
-            </div>
-          <% else %>
-            <div class="text-center py-16 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-              <p class="text-gray-500 mb-1">No food items logged yet for today.</p>
-              <p class="text-sm text-gray-400">Search for food items to add to your log.</p>
+              </div>
+
+              <div class="flex items-center space-x-4">
+                <span class="font-medium text-sm text-gray-700">
+                  <%= entry.food.calories * entry.quantity %> kcal
+                </span>
+                <%= button_to 'x',
+                      daily_log_food_entry_path(@daily_log.id, entry.id),
+                      method: :delete,
+                      data: { confirm: 'Are you sure?' },
+                      class: "text-red-500 hover:text-white hover:bg-red-500 border border-transparent hover:border-red-600 rounded-full h-7 w-7 flex items-center justify-center text-sm transition-all duration-200" %>
+              </div>
             </div>
           <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="text-center py-16 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+    <p class="text-gray-500 mb-1">No food items logged yet for today.</p>
+    <p class="text-sm text-gray-400">Search for food items to add to your log.</p>
+  </div>
+<% end %>
