@@ -2,6 +2,8 @@
 
 # Nutrition Tracker 🍴 💫
 
+![Nutrition Tracker Screenshot](./public/images/hero.png)
+
 A modern web application for tracking daily nutrition intake, built with Ruby on Rails 8.
 
 ## Overview
