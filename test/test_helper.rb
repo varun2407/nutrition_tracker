@@ -4,6 +4,8 @@ require "rails/test_help"
 
 module ActiveSupport
   class TestCase
+    include FactoryBot::Syntax::Methods
+
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
@@ -11,5 +13,8 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    def varun
+      users(:varun)
+    end
   end
 end

@@ -110,6 +110,11 @@ GEM
       tzinfo
     ethon (0.16.0)
       ffi (>= 1.15.0)
+    factory_bot (6.5.1)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.4.4)
+      factory_bot (~> 6.5)
+      railties (>= 5.0.0)
     faraday (2.13.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -398,6 +403,7 @@ DEPENDENCIES
   brakeman
   capybara
   debug
+  factory_bot_rails
   importmap-rails
   jbuilder
   kamal
