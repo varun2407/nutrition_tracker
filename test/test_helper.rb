@@ -13,6 +13,16 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    def login_as(user)
+      post(
+        session_path,
+        params: {
+          email_address: user.email_address,
+          password: "Passw0rd"
+        }
+      )
+    end
+
     def varun
       users(:varun)
     end

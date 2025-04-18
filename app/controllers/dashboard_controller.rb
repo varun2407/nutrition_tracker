@@ -1,6 +1,6 @@
 class DashboardController < ApplicationController
   def show
-    @profile = current_user.profile || current_user.create_profile
+    @profile = current_user.profile
     @daily_log = current_user.daily_logs.includes(food_entries: :food).find_or_create_by(date: Date.today)
 
     calorie_calculator = CalorieCalculator.new
