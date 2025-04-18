@@ -53,5 +53,12 @@ class SearchResults
       Rails.logger.error("Response was: #{response_text}")
       nil
     end
+
+      rescue Errno::ECONNREFUSED => e
+        Rails.logger.error("Ollama server is not running or cannot be reached: #{e.message}")
+        nil
+      rescue StandardError => e
+        Rails.logger.error("Unexpected error while communicating with Ollama: #{e.message}")
+        nil
   end
 end
