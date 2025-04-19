@@ -14,6 +14,7 @@ gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"
 gem "tailwindcss-rails"
+gem 'rails_charts', '~> 0.0.6'
 
 # OTHER
 gem "jbuilder"

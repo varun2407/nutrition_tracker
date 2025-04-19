@@ -12,5 +12,8 @@ class DashboardController < ApplicationController
     @remaining_calories = 2000 - @total_calories
 
     @foods = []
+
+    @daily_calories_weekly = calorie_calculator.calculate_daily_calories(7)
+    @daily_calories_monthly = calorie_calculator.calculate_daily_calories(30)
   end
 end
