@@ -3,7 +3,9 @@
 <div class="w-full px-6">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
     <div class="lg:col-span-4 xl:col-span-3">
-      <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, user_id: current_user.id } %>
+       <%= turbo_frame_tag "food_search_form" do %>
+          <%= render template: "food_searches/new", daily_log_id: @daily_log.id%>
+       <% end %>
     </div>
 
     <div class="lg:col-span-8 xl:col-span-9">

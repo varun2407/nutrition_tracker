@@ -8,8 +8,7 @@ Rails.application.routes.draw do
     resources :food_entries, only: %i[ create destroy ]
   end
 
-
-  get "food_search", to: "food_search#index", as: :food_search
+  resources :food_searches, only: %i[new index]
 
   get "up" => "rails/health#show", as: :rails_health_check
 

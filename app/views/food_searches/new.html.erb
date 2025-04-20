@@ -1,0 +1,26 @@
+<%= turbo_frame_tag :new_search do %>
+  <%= render partial: "food_searches/form", locals: { daily_log_id: params[:daily_log_id] } %>
+
+  <% if @foods.any? %>
+    <ul>
+      <% @foods.each do |food| %>
+        <li class="text-lg font-bold"><%= food.name %></li>
+        <li><%= food.calories %> calories</li>
+        <li>Carbs: <%= food.carbs %> gms</li>
+        <li>Protein: <%= food.protein %> gms</li>
+        <li>Fats: <%= food.fat %> gms</li>
+        <li>
+          <%= form_with url: daily_log_food_entries_path(daily_log_id: params[:daily_log_id]), method: :post do |form| %>
+            <%= form.hidden_field :daily_log_id, value: params[:daily_log_id] %>
+            <%= form.hidden_field :food_id, value: food.id %>
+            <%= form.number_field :quantity, value: 1, min: 1, class: "border border-gray-300 rounded p-1 w-16", placeholder: "Qty" %>
+            <%= form.select :meal_type, options_for_select([["Breakfast", :breakfast], ["Lunch", :lunch], ["Dinner", :dinner], ["Snacks", :snacks]]), class: "border border-gray-300 rounded p-1" %>
+            <%= form.submit "Log Food", class: "bg-green-500 text-white rounded p-2" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% elsif params[:query].present? %>
+    <p class="text-red-500">No results found for "<%= params[:query] %>"</p>
+  <% end %>
+<% end %>

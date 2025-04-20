@@ -1,0 +1,7 @@
+<%= form_with url: food_searches_path, method: :get do |form| %>
+  <%= form.hidden_field :daily_log_id, value: daily_log_id %>
+  <div class="flex items-center space-x-4">
+    <%= form.text_field :query, placeholder: "Enter food name", class: "border border-gray-300 rounded p-2" %>
+    <%= form.submit "Search", class: "bg-blue-500 text-white rounded p-2" %>
+  </div>
+<% end %>
