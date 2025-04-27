@@ -9,7 +9,7 @@ class FoodEntriesController < ApplicationController
       meal_type: params[:meal_type] || :breakfast
     )
 
-    if @food_entry.persisted?
+   if @food_entry.persisted?
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.update(
