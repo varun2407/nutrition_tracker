@@ -23,6 +23,7 @@ gem "bcrypt", "~> 3.1.7"
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
+gem "aasm"
 
 # OLLAMA
 gem 'ollama-ai', '~> 1.3.0'
