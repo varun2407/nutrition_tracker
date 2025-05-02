@@ -24,7 +24,8 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 gem "aasm"
-
+gem "openfoodfacts"
+gem "httparty"
 # OLLAMA
 gem 'ollama-ai', '~> 1.3.0'
 
