@@ -49,10 +49,77 @@
                 title: "Calories for the past 7 days",
                 options: {
                   series: {
-                    barWidth: '50%'
+                    barWidth: '50%',
+                    itemStyle: {
+                      color: '#3B82F6',
+                      borderRadius: [4, 4, 0, 0]
+                    }
                   },
                   tooltip: {
-                    valueFormatter: RailsCharts.js("(value) => value + ' kcal'")
+                    trigger: 'axis',
+                    axisPointer: {
+                      type: 'shadow'
+                    },
+                    formatter: RailsCharts.js("(params) => {
+                      const value = params[0].value;
+                      return `<div class='p-2'>
+                        <div class='font-bold'>${params[0].name}</div>
+                        <div class='text-blue-600'>${value} kcal</div>
+                      </div>`;
+                    }")
+                  },
+                  grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                  },
+                  xAxis: {
+                    type: 'category',
+                    axisLine: {
+                      lineStyle: {
+                        color: '#E5E7EB'
+                      }
+                    },
+                    axisLabel: {
+                      color: '#6B7280'
+                    }
+                  },
+                  yAxis: {
+                    type: 'value',
+                    axisLine: {
+                      show: true,
+                      lineStyle: {
+                        color: '#E5E7EB'
+                      }
+                    },
+                    splitLine: {
+                      lineStyle: {
+                        color: '#F3F4F6'
+                      }
+                    },
+                    axisLabel: {
+                      color: '#6B7280',
+                      formatter: '{value} kcal'
+                    }
+                  },
+                  annotations: {
+                    lines: [{
+                      yAxisID: 'y',
+                      y: RailsCharts.js("(data) => data.reduce((a, b) => a + b, 0) / data.length"),
+                      borderColor: 'rgba(239, 68, 68, 0.5)',
+                      borderWidth: 2,
+                      borderDash: [5, 5],
+                      label: {
+                        content: 'Average',
+                        enabled: true,
+                        position: 'end',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        color: '#EF4444',
+                        padding: [4, 8],
+                        borderRadius: 4
+                      }
+                    }]
                   }
                 }
               %>
@@ -64,10 +131,78 @@
                 title: "Calories for the past 30 days",
                 options: {
                   series: {
-                    barWidth: '50%'
+                    barWidth: '50%',
+                    itemStyle: {
+                      color: '#3B82F6',
+                      borderRadius: [4, 4, 0, 0]
+                    }
                   },
                   tooltip: {
-                    valueFormatter: RailsCharts.js("(value) => value + ' kcal'")
+                    trigger: 'axis',
+                    axisPointer: {
+                      type: 'shadow'
+                    },
+                    formatter: RailsCharts.js("(params) => {
+                      const value = params[0].value;
+                      return `<div class='p-2'>
+                        <div class='font-bold'>${params[0].name}</div>
+                        <div class='text-blue-600'>${value} kcal</div>
+                      </div>`;
+                    }")
+                  },
+                  grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                  },
+                  xAxis: {
+                    type: 'category',
+                    axisLine: {
+                      lineStyle: {
+                        color: '#E5E7EB'
+                      }
+                    },
+                    axisLabel: {
+                      color: '#6B7280',
+                      rotate: 45
+                    }
+                  },
+                  yAxis: {
+                    type: 'value',
+                    axisLine: {
+                      show: true,
+                      lineStyle: {
+                        color: '#E5E7EB'
+                      }
+                    },
+                    splitLine: {
+                      lineStyle: {
+                        color: '#F3F4F6'
+                      }
+                    },
+                    axisLabel: {
+                      color: '#6B7280',
+                      formatter: '{value} kcal'
+                    }
+                  },
+                  annotations: {
+                    lines: [{
+                      yAxisID: 'y',
+                      y: RailsCharts.js("(data) => data.reduce((a, b) => a + b, 0) / data.length"),
+                      borderColor: 'rgba(239, 68, 68, 0.5)',
+                      borderWidth: 2,
+                      borderDash: [5, 5],
+                      label: {
+                        content: 'Average',
+                        enabled: true,
+                        position: 'end',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        color: '#EF4444',
+                        padding: [4, 8],
+                        borderRadius: 4
+                      }
+                    }]
                   }
                 }
               %>
