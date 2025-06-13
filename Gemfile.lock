@@ -77,11 +77,11 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
-    base64 (0.2.0)
+    base64 (0.3.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.1)
-    benchmark (0.4.0)
-    bigdecimal (3.1.9)
+    benchmark (0.4.1)
+    bigdecimal (3.2.2)
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
@@ -98,7 +98,7 @@ GEM
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
     concurrent-ruby (1.3.5)
-    connection_pool (2.5.1)
+    connection_pool (2.5.3)
     crass (1.0.6)
     csv (3.3.4)
     date (3.4.1)
@@ -106,8 +106,8 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     dotenv (3.1.8)
-    drb (2.2.1)
-    ed25519 (1.3.0)
+    drb (2.2.3)
+    ed25519 (1.4.0)
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
@@ -159,13 +159,13 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     json (2.10.2)
-    kamal (2.5.3)
+    kamal (2.6.1)
       activesupport (>= 7.0)
       base64 (~> 0.2)
       bcrypt_pbkdf (~> 1.0)
       concurrent-ruby (~> 1.2)
       dotenv (~> 3.1)
-      ed25519 (~> 1.2)
+      ed25519 (~> 1.4)
       net-ssh (~> 7.3)
       sshkit (>= 1.23.0, < 2.0)
       thor (~> 1.3)
@@ -398,7 +398,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.7.2)
+    zeitwerk (2.7.3)
 
 PLATFORMS
   aarch64-linux
@@ -419,6 +419,7 @@ DEPENDENCIES
   brakeman
   capybara
   debug
+  factory_bot_rails
   httparty
   importmap-rails
   jbuilder
