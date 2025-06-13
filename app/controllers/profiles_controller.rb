@@ -1,6 +1,11 @@
 class ProfilesController < ApplicationController
   def edit
     @profile = current_user.profile
+    if @profile.height.present?
+      conversion = UnitConversionHelper.cm_to_ft_in(@profile.height)
+      @profile.height_feet = conversion[:feet]
+      @profile.height_inches = conversion[:inches]
+    end
   end
 
   def update
@@ -16,6 +21,12 @@ class ProfilesController < ApplicationController
   private
 
   def profile_params
-    params.require(:profile).permit(:birth_date, :height)
+    params.require(:profile).permit(
+      :birth_date,
+      :height,
+      :height_feet,
+      :height_inches,
+      :unit_preference
+    )
   end
 end

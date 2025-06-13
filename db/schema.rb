@@ -12,6 +12,8 @@
 
 ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
   create_table "conversations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "user_input"
+    t.text "ai_response"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -60,9 +62,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
   create_table "profiles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.date "birth_date"
-    t.integer "height"
+    t.decimal "height", precision: 5, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "unit_preference", default: "metric"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
