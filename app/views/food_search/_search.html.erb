@@ -21,6 +21,7 @@
           <%= form_with url: daily_log_food_entries_path(daily_log_id: daily_log_id), method: :post, local: false do |form| %>
             <%= form.hidden_field :daily_log_id, value: daily_log_id %>
             <%= form.hidden_field :food_id, value: food.id %>
+            <%= form.hidden_field :date, value: (@selected_date || Date.today).strftime('%Y-%m-%d') %>
             <%= form.number_field :quantity, value: 1, min: 1, class: "border border-gray-300 rounded p-1 w-16", placeholder: "Qty" %>
             <%= form.select :meal_type, options_for_select([["Breakfast", :breakfast], ["Lunch", :lunch], ["Dinner", :dinner], ["Snacks", :snacks]]), class: "border border-gray-300 rounded p-1" %>
             <%= form.submit "Log Food", class: "bg-green-500 text-white rounded p-2" %>

@@ -9,8 +9,14 @@
     <div class="lg:col-span-8 xl:col-span-9">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+          <form method="get" action="/">
+            <div class="flex items-center space-x-2 mb-4">
+              <label for="date" class="font-semibold">Select Date:</label>
+              <input type="date" id="date" name="date" value="<%= @selected_date.strftime('%Y-%m-%d') %>" class="border border-gray-300 rounded p-2" onchange="this.form.submit()">
+            </div>
+          </form>
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-3 mb-4">
-            Calories for <%= Date.today.strftime("%B %d, %Y") %>:
+            Calories for <%= @selected_date.strftime("%B %d, %Y") %>:
           </h2>
 
           <div class="space-y-4">
