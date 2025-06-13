@@ -10,6 +10,14 @@ A modern web application for tracking daily nutrition intake, built with Ruby on
 
 Nutrition Tracker allows users to log and monitor their daily food intake, track calories and nutrients, and maintain a healthy diet. The application features a user-friendly interface built with TailwindCSS and modern Rails techniques.
 
+## Features  🚀:
+
+- Search for foods and log your meals with a clean, fast interface 🔍
+
+- Track daily calories, macros, and basic nutritional info 📊
+
+- Connect with Ollama for smart food recognition (planning to add more LLM providers soon!)🤖
+
 ## Prerequisites
 
 - **Ruby**: Version 3.4.2

@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "~> 8.0.2"
 
-#DRIVERS
+# DRIVERS
 gem "mysql2", "~> 0.5"
 
 # DEPLOYMENT
@@ -27,7 +27,7 @@ gem "aasm"
 gem "openfoodfacts"
 gem "httparty"
 # OLLAMA
-gem 'ollama-ai', '~> 1.3.0'
+gem "ollama-ai", "~> 1.3.0"
 
 gem "bootsnap", require: false
 gem "kamal", require: false
@@ -44,5 +44,6 @@ end
 
 group :test do
   gem "capybara"
+  gem "factory_bot_rails"
   gem "selenium-webdriver"
 end
