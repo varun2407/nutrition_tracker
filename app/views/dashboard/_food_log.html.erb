@@ -1,4 +1,5 @@
-<h3 class="text-xl font-semibold text-gray-800 mb-4">Today's Food Log</h3>
+<% date_to_show = (defined?(selected_date) && selected_date) || @selected_date || Date.today %>
+<h3 class="text-xl font-semibold text-gray-800 mb-4">Food Log for <%= date_to_show.strftime('%B %d, %Y') %></h3>
 
 <% if @daily_log.food_entries.any? %>
   <div class="space-y-6">
@@ -45,7 +46,7 @@
   </div>
 <% else %>
   <div class="text-center py-16 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-    <p class="text-gray-500 mb-1">No food items logged yet for today.</p>
+    <p class="text-gray-500 mb-1">No food items logged yet for <%= date_to_show.strftime('%B %d, %Y') %>.</p>
     <p class="text-sm text-gray-400">Search for food items to add to your log.</p>
   </div>
 <% end %>

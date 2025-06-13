@@ -23,8 +23,41 @@
         </div>
 
         <div class="mb-4">
-          <%= form.label :height, "Height(in cms)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= form.text_field :height, class: "block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-medium text-gray-700">Unit System</label>
+            <div class="flex items-center space-x-4">
+              <label class="inline-flex items-center">
+                <%= form.radio_button :unit_preference, 'metric', class: "form-radio text-blue-600" %>
+                <span class="ml-2 text-sm text-gray-700">Metric (cm)</span>
+              </label>
+              <label class="inline-flex items-center">
+                <%= form.radio_button :unit_preference, 'imperial', class: "form-radio text-blue-600" %>
+                <span class="ml-2 text-sm text-gray-700">Imperial (ft/in)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-4" data-controller="unit-toggle">
+            <div data-unit-toggle-target="metricInput" class="<%= @profile.unit_preference == 'imperial' ? 'hidden' : '' %>">
+              <div class="flex items-center space-x-2">
+                <%= form.number_field :height, step: 0.01, min: 0, class: "block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+                <span class="text-sm text-gray-500">cm</span>
+              </div>
+            </div>
+
+            <div data-unit-toggle-target="imperialInput" class="<%= @profile.unit_preference == 'metric' ? 'hidden' : '' %>">
+              <div class="flex items-center space-x-4">
+                <div class="flex-1">
+                  <%= form.label :height_feet, "Feet", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                  <%= form.number_field :height_feet, min: 0, class: "block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+                </div>
+                <div class="flex-1">
+                  <%= form.label :height_inches, "Inches", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                  <%= form.number_field :height_inches, min: 0, max: 11.99, step: 0.01, class: "block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="flex justify-end">
@@ -40,3 +73,25 @@
 
   </div>
 </div>
+
+<% content_for :head do %>
+  <%= javascript_tag nonce: true do %>
+    document.addEventListener('DOMContentLoaded', function() {
+      const unitRadios = document.querySelectorAll('input[name="profile[unit_preference]"]');
+      const metricInput = document.querySelector('[data-unit-toggle-target="metricInput"]');
+      const imperialInput = document.querySelector('[data-unit-toggle-target="imperialInput"]');
+
+      unitRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.value === 'metric') {
+            metricInput.classList.remove('hidden');
+            imperialInput.classList.add('hidden');
+          } else {
+            metricInput.classList.add('hidden');
+            imperialInput.classList.remove('hidden');
+          }
+        });
+      });
+    });
+  <% end %>
+<% end %>

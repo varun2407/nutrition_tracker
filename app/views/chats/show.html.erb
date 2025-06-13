@@ -1,0 +1,76 @@
+<% content_for(:title) { "Chat with AI | Nutrition Tracker" } %>
+
+<div class="flex flex-col h-screen bg-white">
+  <div class="flex flex-col h-full max-w-3xl mx-auto">
+    <div id="messages" class="flex-1 overflow-y-auto py-4 px-4 md:px-8">
+      <% if @conversations.empty? %>
+        <div class="flex flex-col items-center justify-center h-full">
+          <div class="rounded-full bg-green-100 p-4 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <h2 class="text-xl font-semibold mb-2">Nutrition Assistant</h2>
+          <p class="text-gray-500 text-center max-w-md">
+            Start a conversation with your Nutrition Assistant. Ask about dietary facts, meal suggestions, or any nutrition-related queries.
+          </p>
+        </div>
+      <% else %>
+        <!-- Conversation history -->
+        <% @conversations.each_with_index do |conversation, index| %>
+          <% if index % 2 == 0 %>
+            <!-- User message -->
+            <div class="mb-6">
+              <div class="flex gap-4 px-4 md:px-8 max-w-3xl mx-auto">
+                <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="prose">
+                  <%= conversation.user_input %>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="mb-6 bg-gray-50">
+              <div class="flex gap-4 px-4 md:px-8 py-6 max-w-3xl mx-auto">
+                <div class="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="prose">
+                  <%= conversation.ai_response %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="border-t border-gray-200 p-4">
+      <%= form_with model: Conversation.new, url: chat_path, method: :post, data: { turbo: true }, class: "max-w-3xl mx-auto" do |form| %>
+        <div class="relative flex items-center">
+          <%= form.text_area :user_input,
+              placeholder: "Message Nutrition Assistant...",
+              rows: 1,
+              class: "w-full rounded-lg border border-gray-300 shadow-sm pl-4 pr-14 py-3 focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50",
+              style: "resize: none; min-height: 44px; max-height: 200px;",
+              data: { controller: "textarea-autogrow" } %>
+
+          <%= form.button type: "submit", class: "absolute right-2 rounded-md p-1 text-gray-500 hover:bg-green-100 hover:text-green-600 transition-colors" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          <% end %>
+        </div>
+        <p class="text-xs text-center text-gray-500 mt-2">
+          The Assistant may produce inaccurate information about dietary facts.
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>

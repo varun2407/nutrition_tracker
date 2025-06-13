@@ -14,6 +14,7 @@ gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"
 gem "tailwindcss-rails"
+gem "rails_charts", "~> 0.0.6"
 
 # OTHER
 gem "jbuilder"
@@ -22,7 +23,9 @@ gem "bcrypt", "~> 3.1.7"
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
-
+gem "aasm"
+gem "openfoodfacts"
+gem "httparty"
 # OLLAMA
 gem "ollama-ai", "~> 1.3.0"
 
