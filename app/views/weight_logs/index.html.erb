@@ -1,0 +1,138 @@
+<% content_for(:title) { "Weight Tracking | Nutrition Tracker" } %>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Weight Log Form -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Log Weight</h2>
+        <%= form_with(model: @weight_log, local: true, class: "space-y-4") do |f| %>
+          <div>
+            <%= f.label :weight, class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <%= f.number_field :weight, step: "0.1", class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <span class="text-gray-500 sm:text-sm"><%= current_user.profile.unit_preference == 'metric' ? 'kg' : 'lbs' %></span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <%= f.label :logged_date, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.date_field :logged_date, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+          </div>
+
+          <div>
+            <%= f.label :notes, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.text_area :notes, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+          </div>
+
+          <%= f.submit "Log Weight", class: "w-full bg-blue-600 text-white rounded-md py-2 px-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Weight Chart -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Weight Progress</h2>
+        <div id="weightChart" style="height: 400px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weight History -->
+  <div class="mt-8">
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800">Weight History</h2>
+      </div>
+      <div class="divide-y divide-gray-200">
+        <% @weight_logs.each do |log| %>
+          <div class="px-6 py-4 flex justify-between items-center">
+            <div>
+              <p class="text-lg font-medium text-gray-900"><%= log.display_weight %> <%= log.weight_unit %></p>
+              <p class="text-sm text-gray-500"><%= log.logged_date.strftime("%B %d, %Y") %></p>
+              <% if log.notes.present? %>
+                <p class="text-sm text-gray-600 mt-1"><%= log.notes %></p>
+              <% end %>
+            </div>
+            <div class="flex space-x-2">
+              <%= link_to "Edit", edit_weight_log_path(log), class: "text-blue-600 hover:text-blue-800" %>
+              <%= button_to "Delete", weight_log_path(log), method: :delete, class: "text-red-600 hover:text-red-800", data: { confirm: "Are you sure?" } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const weightData = <%= raw @weight_logs.map { |log| { date: log.logged_date.strftime("%Y-%m-%d"), weight: log.display_weight } }.to_json %>;
+  const unit = '<%= current_user.profile.unit_preference == "metric" ? "kg" : "lbs" %>';
+
+  const chart = echarts.init(document.getElementById('weightChart'));
+
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+      formatter: function(params) {
+        const data = params[0];
+        return `${data.name}<br/>${data.value} ${unit}`;
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: weightData.map(item => item.date),
+      axisLabel: {
+        formatter: function(value) {
+          return new Date(value).toLocaleDateString();
+        }
+      }
+    },
+    yAxis: {
+      type: 'value',
+      name: `Weight (${unit})`,
+      axisLabel: {
+        formatter: `{value} ${unit}`
+      }
+    },
+    series: [{
+      data: weightData.map(item => item.weight),
+      type: 'line',
+      smooth: true,
+      showSymbol: true,
+      symbolSize: 8,
+      itemStyle: {
+        color: '#3B82F6'
+      },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: 'rgba(59, 130, 246, 0.3)'
+          },
+          {
+            offset: 1,
+            color: 'rgba(59, 130, 246, 0.1)'
+          }
+        ])
+      }
+    }],
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    }
+  };
+
+  chart.setOption(option);
+
+  window.addEventListener('resize', function() {
+    chart.resize();
+  });
+});
+</script>

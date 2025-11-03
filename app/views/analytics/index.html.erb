@@ -1,0 +1,189 @@
+<% content_for(:title) { "Analytics | Nutrition Tracker" } %>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-8">Nutrition Analytics</h1>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Macro Distribution -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Macro Distribution</h2>
+      <div id="macroChart" style="height: 300px;"></div>
+    </div>
+
+    <!-- Calorie Trends -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Calorie Trends</h2>
+      <div id="calorieChart" style="height: 300px;"></div>
+    </div>
+
+    <!-- Meal Timing -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Meal Timing Patterns</h2>
+      <div id="mealTimingChart" style="height: 300px;"></div>
+    </div>
+
+    <!-- Weekly Report -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Weekly Summary</h2>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Average Daily Calories:</span>
+          <span class="font-semibold"><%= @weekly_report[:average_calories] %> kcal</span>
+        </div>
+
+        <% if @weekly_report[:weight_change] %>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Weight Change:</span>
+            <span class="font-semibold <%= @weekly_report[:weight_change][:change] > 0 ? 'text-red-600' : 'text-green-600' %>">
+              <%= @weekly_report[:weight_change][:change] %> kg
+              (<%= @weekly_report[:weight_change][:percentage] %>%)
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Macro Distribution Chart
+  const macroChart = echarts.init(document.getElementById('macroChart'));
+  const macroData = <%= raw @macro_distribution.to_json %>;
+
+  const macroOption = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c}%'
+    },
+    series: [{
+      type: 'pie',
+      radius: ['40%', '70%'],
+      avoidLabelOverlap: false,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2
+      },
+      label: {
+        show: false,
+        position: 'center'
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: '20',
+          fontWeight: 'bold'
+        }
+      },
+      labelLine: {
+        show: false
+      },
+      data: [
+        { value: macroData.carbs, name: 'Carbs', itemStyle: { color: '#3B82F6' } },
+        { value: macroData.protein, name: 'Protein', itemStyle: { color: '#10B981' } },
+        { value: macroData.fat, name: 'Fat', itemStyle: { color: '#F59E0B' } }
+      ]
+    }]
+  };
+
+  macroChart.setOption(macroOption);
+
+  // Calorie Trends Chart
+  const calorieChart = echarts.init(document.getElementById('calorieChart'));
+  const calorieData = <%= raw @calorie_trends.to_json %>;
+
+  const calorieOption = {
+    tooltip: {
+      trigger: 'axis',
+      formatter: function(params) {
+        const data = params[0];
+        return `${data.name}<br/>${data.value} kcal`;
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: Object.keys(calorieData),
+      axisLabel: {
+        formatter: function(value) {
+          return new Date(value).toLocaleDateString();
+        }
+      }
+    },
+    yAxis: {
+      type: 'value',
+      name: 'Calories',
+      axisLabel: {
+        formatter: '{value} kcal'
+      }
+    },
+    series: [{
+      data: Object.values(calorieData),
+      type: 'line',
+      smooth: true,
+      showSymbol: true,
+      symbolSize: 8,
+      itemStyle: {
+        color: '#3B82F6'
+      },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: 'rgba(59, 130, 246, 0.3)'
+          },
+          {
+            offset: 1,
+            color: 'rgba(59, 130, 246, 0.1)'
+          }
+        ])
+      }
+    }]
+  };
+
+  calorieChart.setOption(calorieOption);
+
+  // Meal Timing Chart
+  const mealTimingChart = echarts.init(document.getElementById('mealTimingChart'));
+  const mealTimingData = <%= raw @meal_timing.to_json %>;
+
+  const mealTimingOption = {
+    tooltip: {
+      trigger: 'axis',
+      formatter: function(params) {
+        const data = params[0];
+        return `${data.name}<br/>Average time: ${data.value}:00`;
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: Object.keys(mealTimingData).map(meal => meal.charAt(0).toUpperCase() + meal.slice(1))
+    },
+    yAxis: {
+      type: 'value',
+      name: 'Hour of Day',
+      min: 0,
+      max: 24,
+      axisLabel: {
+        formatter: '{value}:00'
+      }
+    },
+    series: [{
+      data: Object.values(mealTimingData),
+      type: 'bar',
+      itemStyle: {
+        color: '#3B82F6'
+      }
+    }]
+  };
+
+  mealTimingChart.setOption(mealTimingOption);
+
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    macroChart.resize();
+    calorieChart.resize();
+    mealTimingChart.resize();
+  });
+});
+</script>

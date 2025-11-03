@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     resources :food_entries, only: %i[ create destroy ]
   end
 
+  resources :weight_logs
+  get "analytics", to: "analytics#index"
 
   get "food_search", to: "food_search#index", as: :food_search
 

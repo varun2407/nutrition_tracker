@@ -4,10 +4,14 @@ class User < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_one :goal, dependent: :destroy
   has_many :daily_logs, dependent: :destroy
+  has_many :weight_logs, dependent: :destroy
 
   after_create_commit :create_profile
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
+
+  validates :email_address, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, length: { minimum: 8 }, if: -> { new_record? || password.present? }
 
   private
     def create_profile
