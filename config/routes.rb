@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   end
 
   resources :weight_logs
+  resources :foods, only: [:index, :new, :create, :edit, :update, :destroy]
   get "analytics", to: "analytics#index"
 
   get "food_search", to: "food_search#index", as: :food_search

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_09_231456) do
   create_table "conversations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "user_input"
     t.text "ai_response"
@@ -47,7 +47,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
     t.datetime "updated_at", null: false
     t.string "measurement_type", default: "weight"
     t.string "unit", default: "g"
-    t.index ["name"], name: "index_foods_on_name", unique: true
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_foods_on_user_id"
   end
 
   create_table "goals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -113,6 +114,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
   add_foreign_key "daily_logs", "users"
   add_foreign_key "food_entries", "daily_logs"
   add_foreign_key "food_entries", "foods"
+  add_foreign_key "foods", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "profiles", "users"
   add_foreign_key "sessions", "users"

@@ -5,7 +5,12 @@ class FoodSearchController < ApplicationController
     # else
     #   @foods = []
     # end
-    @foods = params[:query].present? ? Food.where("name LIKE ?", "%#{params[:query]}%") : []
+    if params[:query].present?
+      # Search both system foods (user_id is nil) and user's custom foods
+      @foods = Food.searchable_by(current_user).where("name LIKE ?", "%#{params[:query]}%")
+    else
+      @foods = []
+    end
 
     if @foods.empty? && params[:query].present?
       search = SearchResults.new
@@ -13,7 +18,8 @@ class FoodSearchController < ApplicationController
       @foods = [ ai_result ] if ai_result
 
         if ai_result
-          @foods = [ Food.find_or_create_by(name: ai_result[:name]) do |food|
+          # Create system food (user_id = nil) if it doesn't exist
+          @foods = [ Food.find_or_create_by(name: ai_result[:name], user_id: nil) do |food|
             food.calories = ai_result[:calories]
             food.carbs = ai_result[:carbs]
             food.protein = ai_result[:protein]

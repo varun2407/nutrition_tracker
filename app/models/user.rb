@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_one :goal, dependent: :destroy
   has_many :daily_logs, dependent: :destroy
   has_many :weight_logs, dependent: :destroy
+  has_many :foods, dependent: :destroy
 
   after_create_commit :create_profile
 

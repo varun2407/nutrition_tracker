@@ -1,0 +1,87 @@
+<% content_for(:title) { "My Foods | Nutrition Tracker" } %>
+
+<div class="min-h-screen bg-gray-50">
+  <!-- Header Section -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">My Custom Foods</h1>
+          <p class="text-gray-500 mt-1">Manage your personal food database</p>
+        </div>
+        <%= link_to new_food_path, class: "mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" do %>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add New Food
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+    <% if @foods.any? %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% @foods.each do |food| %>
+          <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-200">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-lg font-bold text-gray-900 flex-1"><%= food.name %></h3>
+              <div class="flex items-center space-x-2 ml-4">
+                <%= link_to edit_food_path(food), class: "p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200" do %>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L12.828 15H11v-1.828l4.586-4.586z" />
+                  </svg>
+                <% end %>
+                <%= link_to food_path(food), method: :delete, data: { confirm: "Are you sure you want to delete #{food.name}?" }, class: "p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200" do %>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div class="bg-blue-50 rounded-lg px-3 py-2 text-center">
+                <div class="text-blue-600 font-bold text-lg"><%= food.calories %></div>
+                <div class="text-xs text-gray-600">Calories</div>
+              </div>
+              <div class="bg-green-50 rounded-lg px-3 py-2 text-center">
+                <div class="text-green-600 font-bold text-lg"><%= food.carbs %></div>
+                <div class="text-xs text-gray-600">Carbs (g)</div>
+              </div>
+              <div class="bg-purple-50 rounded-lg px-3 py-2 text-center">
+                <div class="text-purple-600 font-bold text-lg"><%= food.protein %></div>
+                <div class="text-xs text-gray-600">Protein (g)</div>
+              </div>
+              <div class="bg-orange-50 rounded-lg px-3 py-2 text-center">
+                <div class="text-orange-600 font-bold text-lg"><%= food.fat %></div>
+                <div class="text-xs text-gray-600">Fat (g)</div>
+              </div>
+            </div>
+
+            <div class="text-xs text-gray-500 pt-3 border-t border-gray-100">
+              <span class="font-medium">Unit:</span> <%= food.unit || "g" %> |
+              <span class="font-medium">Type:</span> <%= food.measurement_type || "weight" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No custom foods yet</h3>
+        <p class="text-gray-500 mb-6">Create your first custom food to get started</p>
+        <%= link_to new_food_path, class: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200" do %>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Your First Food
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
