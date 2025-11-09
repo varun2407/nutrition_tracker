@@ -12,10 +12,17 @@ class WeightLogsController < ApplicationController
     @weight_log.logged_date ||= Date.today
 
     if @weight_log.save
-      redirect_to weight_logs_path, notice: "Weight logged successfully."
+      @weight_logs = current_user.weight_logs.recent
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to weight_logs_path, notice: "Weight logged successfully." }
+      end
     else
       @weight_logs = current_user.weight_logs.recent
-      render :index, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render :create, status: :unprocessable_entity }
+        format.html { render :index, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -32,7 +39,11 @@ class WeightLogsController < ApplicationController
 
   def destroy
     @weight_log.destroy
-    redirect_to weight_logs_path, notice: "Weight log deleted successfully."
+    @weight_logs = current_user.weight_logs.recent
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to weight_logs_path, notice: "Weight log deleted successfully." }
+    end
   end
 
   private

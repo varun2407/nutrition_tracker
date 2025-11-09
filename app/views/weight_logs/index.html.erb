@@ -1,138 +1,255 @@
 <% content_for(:title) { "Weight Tracking | Nutrition Tracker" } %>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Weight Log Form -->
-    <div class="lg:col-span-1">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Log Weight</h2>
-        <%= form_with(model: @weight_log, local: true, class: "space-y-4") do |f| %>
-          <div>
-            <%= f.label :weight, class: "block text-sm font-medium text-gray-700" %>
-            <div class="mt-1 relative rounded-md shadow-sm">
-              <%= f.number_field :weight, step: "0.1", class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span class="text-gray-500 sm:text-sm"><%= current_user.profile.unit_preference == 'metric' ? 'kg' : 'lbs' %></span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <%= f.label :logged_date, class: "block text-sm font-medium text-gray-700" %>
-            <%= f.date_field :logged_date, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
-          </div>
-
-          <div>
-            <%= f.label :notes, class: "block text-sm font-medium text-gray-700" %>
-            <%= f.text_area :notes, rows: 3, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
-          </div>
-
-          <%= f.submit "Log Weight", class: "w-full bg-blue-600 text-white rounded-md py-2 px-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
-        <% end %>
-      </div>
-    </div>
-
-    <!-- Weight Chart -->
-    <div class="lg:col-span-2">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Weight Progress</h2>
-        <div id="weightChart" style="height: 400px;"></div>
-      </div>
+<div class="min-h-screen bg-gray-50">
+  <!-- Header Section -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
+      <h1 class="text-3xl font-bold text-gray-900">Weight Tracking</h1>
+      <p class="text-gray-500 mt-1">Monitor your weight progress over time</p>
     </div>
   </div>
 
-  <!-- Weight History -->
-  <div class="mt-8">
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-      <div class="px-6 py-4 border-b border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-800">Weight History</h2>
-      </div>
-      <div class="divide-y divide-gray-200">
-        <% @weight_logs.each do |log| %>
-          <div class="px-6 py-4 flex justify-between items-center">
-            <div>
-              <p class="text-lg font-medium text-gray-900"><%= log.display_weight %> <%= log.weight_unit %></p>
-              <p class="text-sm text-gray-500"><%= log.logged_date.strftime("%B %d, %Y") %></p>
-              <% if log.notes.present? %>
-                <p class="text-sm text-gray-600 mt-1"><%= log.notes %></p>
+  <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Weight Log Form -->
+      <div class="lg:col-span-1">
+        <turbo-frame id="weight_log_form" class="block">
+          <div class="bg-white rounded-xl border border-gray-200 p-6 sticky lg:top-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Log Weight
+            </h2>
+
+            <%= form_with(model: @weight_log, local: true, data: { turbo_frame: "weight_log_form" }, class: "space-y-5") do |f| %>
+              <% if @weight_log.errors.any? %>
+                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-4">
+                  <ul class="list-disc pl-5 text-sm text-red-700 space-y-1">
+                    <% @weight_log.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
               <% end %>
-            </div>
-            <div class="flex space-x-2">
-              <%= link_to "Edit", edit_weight_log_path(log), class: "text-blue-600 hover:text-blue-800" %>
-              <%= button_to "Delete", weight_log_path(log), method: :delete, class: "text-red-600 hover:text-red-800", data: { confirm: "Are you sure?" } %>
-            </div>
+
+              <div>
+                <%= f.label :weight, class: "block text-sm font-semibold text-gray-700 mb-2 flex items-center" %>
+                <div class="relative">
+                  <%= f.number_field :weight, step: "0.1", placeholder: "Enter weight", class: "w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </div>
+                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <span class="text-gray-500 font-semibold"><%= current_user.profile.unit_preference == 'metric' ? 'kg' : 'lbs' %></span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <%= f.label :logged_date, class: "block text-sm font-semibold text-gray-700 mb-2 flex items-center" %>
+                <div class="relative">
+                  <%= f.date_field :logged_date, class: "w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <%= f.label :notes, class: "block text-sm font-semibold text-gray-700 mb-2 flex items-center" %>
+                <%= f.text_area :notes, rows: 3, placeholder: "Add any notes (optional)", class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700 resize-none" %>
+              </div>
+
+              <%= f.submit "Log Weight", class: "w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" %>
+            <% end %>
           </div>
-        <% end %>
+        </turbo-frame>
+      </div>
+
+      <!-- Weight Chart and History -->
+      <div class="lg:col-span-2 space-y-8">
+        <turbo-frame id="weight_chart">
+          <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Weight Progress
+              </h2>
+            </div>
+            <div id="weightChart" class="h-96 w-full" data-weight-data="<%= @weight_logs.map { |log| { date: log.logged_date.strftime("%Y-%m-%d"), weight: log.display_weight } }.to_json %>" data-unit="<%= current_user.profile.unit_preference == "metric" ? "kg" : "lbs" %>"></div>
+          </div>
+        </turbo-frame>
+
+        <!-- Weight History -->
+        <turbo-frame id="weight_history">
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+              <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Weight History
+              </h2>
+            </div>
+
+            <% if @weight_logs.any? %>
+              <div class="divide-y divide-gray-100">
+                <% @weight_logs.each do |log| %>
+                  <div class="px-6 py-4 hover:bg-gray-50 transition-colors duration-200 group">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center space-x-4">
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-3">
+                          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p class="text-xl font-bold text-gray-900">
+                            <%= log.display_weight %> <span class="text-sm font-normal text-gray-500"><%= log.weight_unit %></span>
+                          </p>
+                          <p class="text-sm text-gray-500 flex items-center mt-1">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <%= log.logged_date.strftime("%B %d, %Y") %>
+                          </p>
+                          <% if log.notes.present? %>
+                            <p class="text-sm text-gray-600 mt-1 italic">"<%= log.notes %>"</p>
+                          <% end %>
+                        </div>
+                      </div>
+                      <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <%= link_to edit_weight_log_path(log), class: "p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200", data: { turbo_frame: "_top" } do %>
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        <% end %>
+                        <%= button_to weight_log_path(log), method: :delete, data: { confirm: "Are you sure you want to delete this weight log?", turbo_frame: "weight_history" }, class: "p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200", local: false do %>
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="text-center py-16">
+                <svg class="w-20 h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">No weight logs yet</h3>
+                <p class="text-gray-500 text-sm">Start tracking your weight by logging your first entry above.</p>
+              </div>
+            <% end %>
+          </div>
+        </turbo-frame>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const weightData = <%= raw @weight_logs.map { |log| { date: log.logged_date.strftime("%Y-%m-%d"), weight: log.display_weight } }.to_json %>;
-  const unit = '<%= current_user.profile.unit_preference == "metric" ? "kg" : "lbs" %>';
+// Minimal JS - only for chart rendering (echarts is necessary for visualization)
+(function() {
+  const chartEl = document.getElementById('weightChart');
+  if (!chartEl) return;
 
-  const chart = echarts.init(document.getElementById('weightChart'));
+  const weightData = JSON.parse(chartEl.dataset.weightData || '[]');
+  const unit = chartEl.dataset.unit || 'kg';
 
-  const option = {
-    tooltip: {
-      trigger: 'axis',
-      formatter: function(params) {
-        const data = params[0];
-        return `${data.name}<br/>${data.value} ${unit}`;
-      }
-    },
-    xAxis: {
-      type: 'category',
-      data: weightData.map(item => item.date),
-      axisLabel: {
-        formatter: function(value) {
-          return new Date(value).toLocaleDateString();
+  if (weightData.length > 0 && typeof echarts !== 'undefined') {
+    const chart = echarts.init(chartEl);
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        borderColor: 'transparent',
+        textStyle: { color: '#fff' },
+        formatter: function(params) {
+          const data = params[0];
+          return `<div class='p-3'>
+            <div class='font-bold text-white mb-1'>${new Date(data.name).toLocaleDateString()}</div>
+            <div class='text-blue-400 font-semibold text-lg'>${data.value} ${unit}</div>
+          </div>`;
         }
-      }
-    },
-    yAxis: {
-      type: 'value',
-      name: `Weight (${unit})`,
-      axisLabel: {
-        formatter: `{value} ${unit}`
-      }
-    },
-    series: [{
-      data: weightData.map(item => item.weight),
-      type: 'line',
-      smooth: true,
-      showSymbol: true,
-      symbolSize: 8,
-      itemStyle: {
-        color: '#3B82F6'
       },
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgba(59, 130, 246, 0.3)'
-          },
-          {
-            offset: 1,
-            color: 'rgba(59, 130, 246, 0.1)'
+      xAxis: {
+        type: 'category',
+        data: weightData.map(item => item.date),
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          color: '#6B7280',
+          fontWeight: '500',
+          formatter: function(value) {
+            return new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
           }
-        ])
-      }
-    }],
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true
-    }
-  };
-
-  chart.setOption(option);
-
-  window.addEventListener('resize', function() {
-    chart.resize();
-  });
-});
+        }
+      },
+      yAxis: {
+        type: 'value',
+        name: `Weight (${unit})`,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: { lineStyle: { color: '#F3F4F6', width: 1 } },
+        axisLabel: {
+          color: '#6B7280',
+          formatter: `{value} ${unit}`,
+          fontWeight: '500'
+        }
+      },
+      series: [{
+        data: weightData.map(item => item.weight),
+        type: 'line',
+        smooth: true,
+        showSymbol: true,
+        symbolSize: 10,
+        itemStyle: { color: '#3B82F6' },
+        lineStyle: { width: 3 },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(59, 130, 246, 0.3)' },
+              { offset: 1, color: 'rgba(59, 130, 246, 0.05)' }
+            ]
+          }
+        }
+      }],
+      grid: {
+        left: '10%',
+        right: '5%',
+        bottom: '15%',
+        top: '10%',
+        containLabel: true
+      },
+      animation: true,
+      animationDuration: 1000,
+      animationEasing: 'cubicOut'
+    };
+    chart.setOption(option);
+    window.addEventListener('resize', function() { chart.resize(); });
+  } else if (weightData.length === 0) {
+    chartEl.innerHTML = `
+      <div class="flex items-center justify-center h-full text-gray-400">
+        <div class="text-center">
+          <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <p class="text-gray-500">Log your first weight entry to see your progress chart</p>
+        </div>
+      </div>
+    `;
+  }
+})();
 </script>

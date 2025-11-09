@@ -16,7 +16,7 @@
     <% end %>
 
     <% if @foods.any? %>
-      <div class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+      <div class="space-y-3 max-h-96 overflow-y-auto pr-2">
         <% @foods.each do |food| %>
           <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-4 border border-gray-200 hover:shadow-md transition-all duration-200">
             <div class="mb-3">
@@ -93,21 +93,4 @@
       </div>
     <% end %>
   </div>
-
-  <style>
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-  </style>
 </turbo-frame>
