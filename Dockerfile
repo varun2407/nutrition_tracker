@@ -34,8 +34,13 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
+# Set build flags to reduce memory pressure and prevent segmentation faults
+ENV MAKEFLAGS="-j1" \
+    CFLAGS="-O2 -pipe" \
+    CXXFLAGS="-O2 -pipe"
+
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
+RUN bundle install --jobs 1 --retry 3 && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 

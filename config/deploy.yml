@@ -2,12 +2,12 @@
 service: nutrition_tracker
 
 # Name of the container image.
-image: your-user/nutrition_tracker
+image: nutrition_tracker
 
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - localhost
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -23,11 +23,9 @@ proxy:
 
 # Credentials for your image host.
 registry:
-  # Specify the registry server, if you're not using Docker Hub
-  # server: registry.digitalocean.com / ghcr.io / ...
-  username: your-user
-
-  # Always use an access token rather than real password when possible.
+  # Local registry (no authentication required)
+  server: localhost:5000
+  username: local
   password:
     - KAMAL_REGISTRY_PASSWORD
 
@@ -35,6 +33,7 @@ registry:
 env:
   secret:
     - RAILS_MASTER_KEY
+    - NUTRITION_TRACKER_DATABASE_PASSWORD
   clear:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
@@ -48,7 +47,8 @@ env:
 
     # Match this to any external database server to configure Active Record correctly
     # Use nutrition_tracker-db for a db accessory server on same machine via local kamal docker network.
-    # DB_HOST: 192.168.0.2
+    DB_HOST: nutrition_tracker-db
+    DB_PORT: "3306"
 
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug
@@ -75,7 +75,7 @@ asset_path: /rails/public/assets
 
 # Configure the image builder.
 builder:
-  arch: amd64
+  arch: arm64
 
   # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
   # remote: ssh://docker@docker-builder-server
@@ -88,26 +88,23 @@ builder:
   #   - RAILS_MASTER_KEY
 
 # Use a different ssh user than root
-# ssh:
-#   user: app
+ssh:
+  user: varunshembekar
 
 # Use accessory services (secrets come from .kamal/secrets).
-# accessories:
-#   db:
-#     image: mysql:8.0
-#     host: 192.168.0.2
-#     # Change to 3306 to expose port to the world instead of just local network.
-#     port: "127.0.0.1:3306:3306"
-#     env:
-#       clear:
-#         MYSQL_ROOT_HOST: '%'
-#       secret:
-#         - MYSQL_ROOT_PASSWORD
-#     files:
-#       - config/mysql/production.cnf:/etc/mysql/my.cnf
-#       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-#     directories:
-#       - data:/var/lib/mysql
+accessories:
+  db:
+    image: mysql:8.0
+    host: localhost
+    # Change to 3306 to expose port to the world instead of just local network.
+    port: "127.0.0.1:3306:3306"
+    env:
+      clear:
+        MYSQL_ROOT_HOST: '%'
+      secret:
+        - MYSQL_ROOT_PASSWORD
+    directories:
+      - data:/var/lib/mysql
 #   redis:
 #     image: redis:7.0
 #     host: 192.168.0.2
