@@ -15,7 +15,12 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: root
   password:
+  <% if ENV["DB_HOST"] %>
+  host: <%= ENV["DB_HOST"] %>
+  port: <%= ENV.fetch("DB_PORT") { 3306 } %>
+  <% else %>
   socket: /tmp/mysql.sock
+  <% end %>
 
 development:
   <<: *default
@@ -50,10 +55,18 @@ test:
 #
 production:
   primary: &primary_production
-    <<: *default
+    adapter: mysql2
+    encoding: utf8mb4
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     database: nutrition_tracker_production
     username: nutrition_tracker
     password: <%= ENV["NUTRITION_TRACKER_DATABASE_PASSWORD"] %>
+    <% if ENV["DB_HOST"] %>
+    host: <%= ENV["DB_HOST"] %>
+    port: <%= ENV.fetch("DB_PORT") { 3306 } %>
+    <% else %>
+    socket: /tmp/mysql.sock
+    <% end %>
   cache:
     <<: *primary_production
     database: nutrition_tracker_production_cache

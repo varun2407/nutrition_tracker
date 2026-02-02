@@ -1,0 +1,110 @@
+<%= form_with model: @food, local: true, data: { turbo: true }, class: "space-y-6" do |form| %>
+  <% if @food.errors.any? %>
+    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6">
+      <div class="flex items-center mb-2">
+        <svg class="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="text-red-800 font-semibold">Please fix the following errors:</h3>
+      </div>
+      <ul class="list-disc pl-6 text-sm text-red-700 space-y-1">
+        <% @food.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Food Name -->
+  <div class="space-y-2">
+    <%= form.label :name, "Food Name", class: "block text-sm font-semibold text-gray-700 flex items-center" %>
+    <div class="relative">
+      <%= form.text_field :name, placeholder: "e.g., Grilled Chicken Breast", class: "w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nutritional Information Grid -->
+  <div class="grid grid-cols-2 gap-4">
+    <!-- Calories -->
+    <div class="space-y-2">
+      <%= form.label :calories, "Calories (per 100g)", class: "block text-sm font-semibold text-gray-700" %>
+      <div class="relative">
+        <%= form.number_field :calories, min: 0, step: 1, placeholder: "0", class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+          <span class="text-gray-500 font-medium text-sm">kcal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carbs -->
+    <div class="space-y-2">
+      <%= form.label :carbs, "Carbohydrates (g)", class: "block text-sm font-semibold text-gray-700" %>
+      <div class="relative">
+        <%= form.number_field :carbs, min: 0, step: 0.1, placeholder: "0", class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+          <span class="text-gray-500 font-medium text-sm">g</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Protein -->
+    <div class="space-y-2">
+      <%= form.label :protein, "Protein (g)", class: "block text-sm font-semibold text-gray-700" %>
+      <div class="relative">
+        <%= form.number_field :protein, min: 0, step: 0.1, placeholder: "0", class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+          <span class="text-gray-500 font-medium text-sm">g</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fat -->
+    <div class="space-y-2">
+      <%= form.label :fat, "Fat (g)", class: "block text-sm font-semibold text-gray-700" %>
+      <div class="relative">
+        <%= form.number_field :fat, min: 0, step: 0.1, placeholder: "0", class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+          <span class="text-gray-500 font-medium text-sm">g</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Measurement Type -->
+  <div class="space-y-2">
+    <%= form.label :measurement_type, "Measurement Type", class: "block text-sm font-semibold text-gray-700" %>
+    <%= form.select :measurement_type,
+        options_for_select([
+          ["Weight (g)", "weight"],
+          ["Volume (ml)", "volume"],
+          ["Count (piece)", "count"]
+        ], @food.measurement_type || "weight"),
+        {},
+        { class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700 bg-white" } %>
+  </div>
+
+  <!-- Unit -->
+  <div class="space-y-2">
+    <%= form.label :unit, "Unit", class: "block text-sm font-semibold text-gray-700" %>
+    <%= form.text_field :unit, placeholder: "e.g., g, ml, piece", value: @food.unit || "g", class: "w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 text-gray-700" %>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="flex justify-end pt-6 border-t border-gray-200">
+    <%= link_to "Cancel", foods_path, class: "px-6 py-3 mr-4 border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200" %>
+    <%= button_tag type: :submit, class: "px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" do %>
+      <span class="flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <%= @food.new_record? ? "Create Food" : "Update Food" %>
+      </span>
+    <% end %>
+  </div>
+<% end %>
+

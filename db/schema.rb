@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_09_231456) do
   create_table "conversations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "user_input"
     t.text "ai_response"
@@ -45,7 +45,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
     t.integer "fat", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_foods_on_name", unique: true
+    t.string "measurement_type", default: "weight"
+    t.string "unit", default: "g"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_foods_on_user_id"
   end
 
   create_table "goals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -87,17 +90,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_01_232554) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  create_table "weight_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.decimal "weight", precision: 5, scale: 2, null: false
+    t.date "logged_date", null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "logged_date"], name: "index_weight_logs_on_user_id_and_logged_date", unique: true
+    t.index ["user_id"], name: "index_weight_logs_on_user_id"
+  end
+
   create_table "weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "weight", precision: 5, scale: 2, null: false
     t.date "measured_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.text "notes"
+    t.index ["user_id"], name: "index_weights_on_user_id"
   end
 
   add_foreign_key "daily_logs", "users"
   add_foreign_key "food_entries", "daily_logs"
   add_foreign_key "food_entries", "foods"
+  add_foreign_key "foods", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "profiles", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "weight_logs", "users"
+  add_foreign_key "weights", "users"
 end

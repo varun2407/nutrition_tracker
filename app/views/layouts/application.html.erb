@@ -23,18 +23,27 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
   </head>
 
-  <body>
-  <nav class="fixed top-0 left-0 right-0 bg-white shadow-md flex justify-between items-center px-5 py-3">
-        <div class="flex items-center">
-        <%= link_to "NUTRITION TRACKER", root_path, class: "text-2xl font-bold"%>
-        </div>
-       <% if authenticated? %>
-            <%= link_to "Edit Profile", edit_profile_path(:user_id), class: "text-gray-700 underline hover:no-underline" %>
-            <%= button_to "Sign out", session_path, method: :delete, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer"%>
-        <% end %>
-          </nav>
-      <main class="w-full mt-28 px-5">
+  <body class="bg-gray-50 antialiased">
+    <% auth_pages = (controller_name == 'sessions' && ['new', 'create'].include?(action_name)) ||
+                    (controller_name == 'registrations' && ['new', 'create'].include?(action_name)) ||
+                    (controller_name == 'passwords' && ['new', 'edit'].include?(action_name)) %>
+
+    <% unless auth_pages %>
+      <!-- Mobile Menu Button -->
+      <button id="sidebar-toggle" class="fixed top-4 left-4 z-50 lg:hidden bg-white rounded-xl p-2.5 shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200" onclick="document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay').classList.remove('hidden');">
+        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- Sidebar -->
+      <%= render 'layouts/sidebar' %>
+    <% end %>
+
+    <!-- Main Content -->
+    <main class="<%= 'lg:ml-72' unless auth_pages %> min-h-screen transition-all duration-300">
       <%= yield %>
     </main>
+
   </body>
 </html>

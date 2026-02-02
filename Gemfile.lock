@@ -419,6 +419,7 @@ DEPENDENCIES
   brakeman
   capybara
   debug
+  factory_bot_rails
   httparty
   importmap-rails
   jbuilder

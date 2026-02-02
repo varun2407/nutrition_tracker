@@ -36,11 +36,15 @@ class Profile < ApplicationRecord
 
   before_validation :convert_imperial_height_to_cm, if: :imperial?
 
-  private
-
   def imperial?
     unit_preference == "imperial"
   end
+
+  def metric?
+    unit_preference == "metric"
+  end
+
+  private
 
   def convert_imperial_height_to_cm
     return unless height_feet.present? && height_inches.present?

@@ -12,17 +12,19 @@ class FoodEntriesController < ApplicationController
     if @food_entry.persisted?
       respond_to do |format|
         format.turbo_stream do
+          @daily_log.reload
           render turbo_stream: turbo_stream.update(
             "dashboard_food_log",
             html: render_to_string(
               partial: "dashboard/food_log",
-               locals: { food_entry: @food_entry }
+              locals: { daily_log: @daily_log }
             )
           )
         end
         format.html do
           flash[:success] = "Food entry created successfully."
           @daily_log.reload
+          redirect_to root_path
         end
       end
     else
@@ -32,9 +34,24 @@ class FoodEntriesController < ApplicationController
   end
 
   def destroy
-    food_entry = FoodEntry.find(params[:id])
-    food_entry.destroy
+    @food_entry = FoodEntry.find(params[:id])
+    @daily_log = @food_entry.daily_log
+    @food_entry.destroy
 
-    redirect_to root_path(food_entry.daily_log)
+    respond_to do |format|
+      format.turbo_stream do
+        @daily_log.reload
+        render turbo_stream: turbo_stream.update(
+          "dashboard_food_log",
+          html: render_to_string(
+            partial: "dashboard/food_log",
+            locals: { daily_log: @daily_log }
+          )
+        )
+      end
+      format.html do
+        redirect_to root_path
+      end
+    end
   end
 end

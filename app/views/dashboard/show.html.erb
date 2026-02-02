@@ -1,83 +1,304 @@
 <% content_for(:title) { "Home | Nutrition Tracker" } %>
 
-<div class="w-full px-6">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <div class="lg:col-span-4 xl:col-span-3">
-      <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, user_id: current_user.id } %>
+<div class="min-h-screen bg-gray-50">
+  <!-- Header Section -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Today's Overview</h1>
+          <p class="text-gray-500 mt-1"><%= @selected_date.strftime("%A, %B %d, %Y") %></p>
+        </div>
+        <form method="get" action="/" class="mt-4 md:mt-0">
+          <div class="inline-flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 px-4 py-2.5 transition-colors duration-200 cursor-pointer">
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value="<%= @selected_date.strftime('%Y-%m-%d') %>"
+              class="border-none outline-none text-gray-700 font-medium bg-transparent text-sm cursor-pointer"
+              onchange="this.form.submit()"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <!-- Total Calories Card -->
+      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-blue-100 rounded-lg p-2.5">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm font-medium text-gray-600 mb-1">Total Calories</p>
+        <p class="text-3xl font-bold text-gray-900"><%= @total_calories %></p>
+        <p class="text-xs text-gray-500 mt-1">kcal consumed</p>
+      </div>
+
+      <!-- Remaining Calories Card -->
+      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-<%= @remaining_calories > 0 ? 'green' : 'red' %>-100 rounded-lg p-2.5">
+            <svg class="w-5 h-5 text-<%= @remaining_calories > 0 ? 'green' : 'red' %>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm font-medium text-gray-600 mb-1">Remaining</p>
+        <p class="text-3xl font-bold text-gray-900"><%= @remaining_calories.abs %></p>
+        <p class="text-xs text-gray-500 mt-1"><%= @remaining_calories > 0 ? 'kcal left' : 'kcal over' %></p>
+      </div>
+
+      <!-- Progress Card -->
+      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-purple-100 rounded-lg p-2.5">
+            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm font-medium text-gray-600 mb-1">Daily Progress</p>
+        <%
+          daily_goal = 2000
+          percent_consumed = daily_goal > 0 ? (@total_calories.to_f / daily_goal * 100).round : 0
+          percent_consumed = [percent_consumed, 100].min
+        %>
+        <p class="text-3xl font-bold text-gray-900 mb-3"><%= percent_consumed %>%</p>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div
+            class="h-2 rounded-full transition-all duration-500 <%= @remaining_calories > 0 ? 'bg-blue-600' : 'bg-red-600' %>"
+            style="width: <%= percent_consumed %>%"
+          ></div>
+        </div>
+      </div>
     </div>
 
-    <div class="lg:col-span-8 xl:col-span-9">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-          <form method="get" action="/">
-            <div class="flex items-center space-x-2 mb-4">
-              <label for="date" class="font-semibold">Select Date:</label>
-              <input type="date" id="date" name="date" value="<%= @selected_date.strftime('%Y-%m-%d') %>" class="border border-gray-300 rounded p-2" onchange="this.form.submit()">
-            </div>
-          </form>
-          <h2 class="text-xl font-semibold text-gray-800 border-b pb-3 mb-4">
-            Calories for <%= @selected_date.strftime("%B %d, %Y") %>:
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column: Search -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl border border-gray-200 p-6 sticky lg:top-6 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Find Food
           </h2>
+          <%= render partial: "food_search/search", locals: { foods: [], daily_log_id: @daily_log.id, user_id: current_user.id } %>
+        </div>
+      </div>
 
-          <div class="space-y-4">
-            <div class="flex justify-between items-center">
-              <span class="text-gray-700">Total Calories:</span>
-              <span class="font-medium text-lg"><%= @total_calories %> kcal</span>
-            </div>
-
-            <div class="flex justify-between items-center">
-              <span class="text-gray-700">Remaining:</span>
-              <span class="font-medium text-lg <%= @remaining_calories > 0 ? 'text-green-600' : 'text-red-600' %>">
-                <%= @remaining_calories %> kcal
-              </span>
-            </div>
-            <div class="mt-4">
-              <% percent_consumed = @total_calories > 0 ? (@total_calories.to_f / (@total_calories + @remaining_calories) * 100).round : 0 %>
-              <div class="w-full bg-gray-200 rounded-full h-3">
-                <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: <%= percent_consumed %>%"></div>
-              </div>
-              <div class="flex justify-between text-xs text-gray-500 mt-1">
-                <span>0%</span>
-                <span>50%</span>
-                <span>100%</span>
-              </div>
-            </div>
-           <div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Calories for the Past Week</h3>
-            <%= bar_chart @daily_calories_weekly,
-                class: 'box',
-                title: "Calories for the past 7 days",
-                options: {
-                  series: {
-                    barWidth: '50%'
-                  },
-                  tooltip: {
-                    valueFormatter: RailsCharts.js("(value) => value + ' kcal'")
-                  }
-                }
-              %>
-          </div>
-          <div class="mt-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Calories for the Past Month</h3>
-            <%= bar_chart @daily_calories_monthly,
-                class: 'box',
-                title: "Calories for the past 30 days",
-                options: {
-                  series: {
-                    barWidth: '50%'
-                  },
-                  tooltip: {
-                    valueFormatter: RailsCharts.js("(value) => value + ' kcal'")
-                  }
-                }
-              %>
-          </div>
+      <!-- Right Column: Food Log and Charts -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Food Log -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+          <div id="dashboard_food_log">
+            <%= render partial: "food_log", locals: { daily_log: @daily_log } %>
           </div>
         </div>
 
-        <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-          <div id="dashboard_food_log">
-            <%= render partial: "food_log", locals: { daily_log: @daily_log } %>
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 gap-6">
+          <!-- Weekly Chart -->
+          <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Weekly Overview
+            </h3>
+            <div class="h-64 w-full overflow-hidden">
+              <%= bar_chart @daily_calories_weekly,
+                  class: 'w-full h-full',
+                  title: "",
+                  options: {
+                    series: {
+                      barWidth: '60%',
+                      itemStyle: {
+                        color: {
+                          type: 'linear',
+                          x: 0,
+                          y: 0,
+                          x2: 0,
+                          y2: 1,
+                          colorStops: [
+                            { offset: 0, color: '#3B82F6' },
+                            { offset: 1, color: '#8B5CF6' }
+                          ]
+                        },
+                        borderRadius: [8, 8, 0, 0]
+                      }
+                    },
+                    tooltip: {
+                      trigger: 'axis',
+                      axisPointer: {
+                        type: 'shadow'
+                      },
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                      borderColor: 'transparent',
+                      textStyle: { color: '#fff' },
+                      formatter: RailsCharts.js("(params) => {
+                        const value = params[0].value;
+                        return `<div class='p-3'>
+                          <div class='font-bold text-white mb-1'>${params[0].name}</div>
+                          <div class='text-blue-400 font-semibold text-lg'>${value} kcal</div>
+                        </div>`;
+                      }")
+                    },
+                    grid: {
+                      left: '10%',
+                      right: '5%',
+                      bottom: '15%',
+                      top: '10%',
+                      containLabel: true
+                    },
+                    xAxis: {
+                      type: 'category',
+                      axisLine: {
+                        show: false
+                      },
+                      axisTick: {
+                        show: false
+                      },
+                      axisLabel: {
+                        color: '#6B7280',
+                        fontWeight: '500'
+                      }
+                    },
+                    yAxis: {
+                      type: 'value',
+                      axisLine: {
+                        show: false
+                      },
+                      axisTick: {
+                        show: false
+                      },
+                      splitLine: {
+                        lineStyle: {
+                          color: '#F3F4F6',
+                          width: 1
+                        }
+                      },
+                      axisLabel: {
+                        color: '#6B7280',
+                        formatter: '{value} kcal',
+                        fontWeight: '500'
+                      }
+                    },
+                    animation: true,
+                    animationDuration: 1000,
+                    animationEasing: 'elasticOut'
+                  }
+                %>
+            </div>
+          </div>
+
+          <!-- Monthly Chart -->
+          <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Monthly Trends
+            </h3>
+            <div class="h-64 w-full overflow-hidden">
+              <%= bar_chart @daily_calories_monthly,
+                  class: 'w-full h-full',
+                  title: "",
+                  options: {
+                    series: {
+                      barWidth: '40%',
+                      itemStyle: {
+                        color: {
+                          type: 'linear',
+                          x: 0,
+                          y: 0,
+                          x2: 0,
+                          y2: 1,
+                          colorStops: [
+                            { offset: 0, color: '#6366F1' },
+                            { offset: 1, color: '#A855F7' }
+                          ]
+                        },
+                        borderRadius: [8, 8, 0, 0]
+                      }
+                    },
+                    tooltip: {
+                      trigger: 'axis',
+                      axisPointer: {
+                        type: 'shadow'
+                      },
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                      borderColor: 'transparent',
+                      textStyle: { color: '#fff' },
+                      formatter: RailsCharts.js("(params) => {
+                        const value = params[0].value;
+                        return `<div class='p-3'>
+                          <div class='font-bold text-white mb-1'>${params[0].name}</div>
+                          <div class='text-purple-400 font-semibold text-lg'>${value} kcal</div>
+                        </div>`;
+                      }")
+                    },
+                    grid: {
+                      left: '10%',
+                      right: '5%',
+                      bottom: '20%',
+                      top: '10%',
+                      containLabel: true
+                    },
+                    xAxis: {
+                      type: 'category',
+                      axisLine: {
+                        show: false
+                      },
+                      axisTick: {
+                        show: false
+                      },
+                      axisLabel: {
+                        color: '#6B7280',
+                        fontWeight: '500',
+                        rotate: 45,
+                        interval: 0
+                      }
+                    },
+                    yAxis: {
+                      type: 'value',
+                      axisLine: {
+                        show: false
+                      },
+                      axisTick: {
+                        show: false
+                      },
+                      splitLine: {
+                        lineStyle: {
+                          color: '#F3F4F6',
+                          width: 1
+                        }
+                      },
+                      axisLabel: {
+                        color: '#6B7280',
+                        formatter: '{value} kcal',
+                        fontWeight: '500'
+                      }
+                    },
+                    animation: true,
+                    animationDuration: 1000,
+                    animationEasing: 'elasticOut'
+                  }
+                %>
+            </div>
           </div>
         </div>
       </div>

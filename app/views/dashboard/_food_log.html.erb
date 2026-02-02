@@ -1,42 +1,82 @@
-<% date_to_show = (defined?(selected_date) && selected_date) || @selected_date || Date.today %>
-<h3 class="text-xl font-semibold text-gray-800 mb-4">Food Log for <%= date_to_show.strftime('%B %d, %Y') %></h3>
+<%
+  date_to_show = (defined?(selected_date) && selected_date) || @selected_date || daily_log&.date || Date.today
+  daily_log_var = daily_log || @daily_log
+%>
 
-<% if @daily_log.food_entries.any? %>
-  <div class="space-y-6">
-    <% @daily_log.food_entries.group_by(&:meal_type).each do |meal_type, entries| %>
-      <div class="bg-white shadow-sm border border-gray-100 rounded-lg">
-        <h4 class="text-md font-medium text-gray-700 bg-gray-100 px-4 py-3 rounded-t-lg flex justify-between items-center">
-          <span class="capitalize"><%= meal_type %></span>
-          <span class="text-sm font-semibold px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+<div class="flex items-center justify-between mb-6">
+  <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+    <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+    </svg>
+    Food Log
+  </h3>
+  <span class="text-sm text-gray-500 font-medium"><%= date_to_show.strftime('%B %d, %Y') %></span>
+</div>
+
+<% if daily_log_var&.food_entries&.any? %>
+  <div class="space-y-4">
+    <%
+      meal_icons = {
+        breakfast: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>',
+        lunch: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+        dinner: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>',
+        snacks: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>'
+      }
+      meal_colors = {
+        breakfast: 'bg-yellow-100 text-yellow-700',
+        lunch: 'bg-blue-100 text-blue-700',
+        dinner: 'bg-purple-100 text-purple-700',
+        snacks: 'bg-pink-100 text-pink-700'
+      }
+    %>
+    <% daily_log_var.food_entries.group_by(&:meal_type).each do |meal_type, entries| %>
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 bg-gray-50">
+          <div class="flex items-center space-x-3">
+            <div class="<%= meal_colors[meal_type.to_sym] %> rounded-lg p-2">
+              <%= raw meal_icons[meal_type.to_sym] %>
+            </div>
+            <h4 class="text-lg font-semibold text-gray-900 capitalize"><%= meal_type %></h4>
+          </div>
+          <span class="text-sm font-semibold px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full">
             <%= entries.sum { |e| e.food.calories * e.quantity } %> kcal
           </span>
-        </h4>
+        </div>
 
         <div class="divide-y divide-gray-100">
           <% entries.each do |entry| %>
-            <div class="px-4 py-3 flex justify-between items-center hover:bg-gray-50 transition-colors">
-              <div>
-                <p class="font-medium text-gray-900"><%= entry.food.name %></p>
-                <div class="flex items-center text-xs text-gray-500 mt-1 space-x-2">
-                  <span><%= entry.quantity %> serving(s)</span>
-                  <span>•</span>
-                  <span><%= entry.food.carbs %>g Carbs</span>
-                  <span>•</span>
-                  <span><%= entry.food.protein %>g Protein</span>
-                  <span>•</span>
-                  <span><%= entry.food.fat %>g Fat</span>
+            <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors duration-200 group">
+              <div class="flex-1">
+                <div class="flex items-center space-x-3 mb-2">
+                  <p class="font-semibold text-gray-900"><%= entry.food.name %></p>
+                  <span class="text-sm text-gray-500 font-medium">× <%= entry.quantity %></span>
+                </div>
+                <div class="flex items-center space-x-4 text-sm">
+                  <div class="flex items-center space-x-1 text-gray-600">
+                    <span class="font-medium"><%= entry.food.carbs %>g</span>
+                    <span class="text-gray-500">Carbs</span>
+                  </div>
+                  <div class="flex items-center space-x-1 text-gray-600">
+                    <span class="font-medium"><%= entry.food.protein %>g</span>
+                    <span class="text-gray-500">Protein</span>
+                  </div>
+                  <div class="flex items-center space-x-1 text-gray-600">
+                    <span class="font-medium"><%= entry.food.fat %>g</span>
+                    <span class="text-gray-500">Fat</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="flex items-center space-x-4">
-                <span class="font-medium text-sm text-gray-700">
-                  <%= entry.food.calories * entry.quantity %> kcal
+              <div class="flex items-center space-x-4 ml-6">
+                <span class="font-semibold text-gray-900 min-w-[80px] text-right">
+                  <%= entry.food.calories * entry.quantity %> <span class="text-sm text-gray-500 font-normal">kcal</span>
                 </span>
-                <%= button_to 'x',
-                      daily_log_food_entry_path(@daily_log.id, entry.id),
+                <%= button_to '×',
+                      daily_log_food_entry_path(daily_log_var.id, entry.id),
                       method: :delete,
-                      data: { confirm: 'Are you sure?' },
-                      class: "text-red-500 hover:text-white hover:bg-red-500 border border-transparent hover:border-red-600 rounded-full h-7 w-7 flex items-center justify-center text-sm transition-all duration-200" %>
+                      local: false,
+                      data: { confirm: 'Are you sure you want to remove this item?', turbo: true },
+                      class: "opacity-0 group-hover:opacity-100 text-white bg-red-500 hover:bg-red-600 rounded-lg h-8 w-8 flex items-center justify-center text-lg font-bold transition-all duration-200 shadow-sm hover:shadow" %>
               </div>
             </div>
           <% end %>
@@ -45,8 +85,14 @@
     <% end %>
   </div>
 <% else %>
-  <div class="text-center py-16 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-    <p class="text-gray-500 mb-1">No food items logged yet for <%= date_to_show.strftime('%B %d, %Y') %>.</p>
-    <p class="text-sm text-gray-400">Search for food items to add to your log.</p>
+  <div class="text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+    <div class="mb-4">
+      <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+    </div>
+    <h4 class="text-lg font-semibold text-gray-700 mb-2">No meals logged yet</h4>
+    <p class="text-gray-500 mb-1">Start tracking your nutrition by searching for food above.</p>
+    <p class="text-sm text-gray-400">Search for food items to add to your log for <%= date_to_show.strftime('%B %d, %Y') %>.</p>
   </div>
 <% end %>
